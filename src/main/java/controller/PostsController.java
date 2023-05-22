@@ -14,7 +14,6 @@ import model.Post;
 import model.User;
 import model.dao.DAOFactory;
 import model.dao.PostDAO;
-import model.dao.UserDAO;
 
 @SuppressWarnings("serial")
 // Herda da classe HttpServlet (extends HttpServlet) para ser tratada como um Servlet
