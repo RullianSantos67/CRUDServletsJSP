@@ -1,7 +1,7 @@
 package controller;
 
 import java.io.IOException;
-import java.util.Calendar;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import jakarta.servlet.ServletException;
@@ -14,9 +14,9 @@ import model.ModelException;
 import model.User;
 import model.dao.CompanyDAO;
 import model.dao.DAOFactory;
-import model.dao.UserDAO;
 
-@WebServlet(urlPatterns = {"/companies", "/company/form", "/company/insert"})
+@WebServlet(urlPatterns = {"/companies", "/company/form", 
+		"/company/insert", "/company/delete"})
 public class CompaniesController extends HttpServlet{
 	
 	@Override
@@ -71,11 +71,50 @@ public class CompaniesController extends HttpServlet{
 			insertCompany(req, resp);			
 			break;
 		}
+		case "/crud-manager/company/delete" :{
+			
+			deleteCompany(req, resp);
+			
+			break;
+		}
 		default:
 			System.out.println("URL inválida " + action);
 		}
 		
 		ControllerUtil.redirect(resp, req.getContextPath() + "/companies");
+	}
+
+	private void deleteCompany(HttpServletRequest req, HttpServletResponse resp) {
+		String companyIdParameter = req.getParameter("id");
+		
+		int companyId = Integer.parseInt(companyIdParameter);
+		
+		CompanyDAO dao = DAOFactory.createDAO(CompanyDAO.class);
+		
+		try {
+			Company company = dao.findById(companyId);
+			
+			if (company == null)
+				throw new ModelException("Empresa não encontrada para deleção.");
+			
+			if (dao.delete(company)) {
+				ControllerUtil.sucessMessage(req, "Empresa '" + 
+						company.getName() + "' deletada com sucesso.");
+			}
+			else {
+				ControllerUtil.errorMessage(req, "Empresa '" + 
+						company.getName() + "' não pode ser deletado. "
+								+ "Há dados relacionados à empresa.");
+			}
+		} catch (ModelException e) {
+			// log no servidor
+			if (e.getCause() instanceof 
+					SQLIntegrityConstraintViolationException) {
+				ControllerUtil.errorMessage(req, e.getMessage());
+			}
+			e.printStackTrace();
+			ControllerUtil.errorMessage(req, e.getMessage());
+		}
 	}
 
 	private void insertCompany(HttpServletRequest req, HttpServletResponse resp) {

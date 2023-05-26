@@ -10,6 +10,11 @@
 	<%@include file="nav-menu.jsp"%>
 	
 	<div id="container" class="container-fluid">
+		<div id="alert" style="${not empty message ? 'display: block;' : 'display: none;'}" class="alert alert-dismissable ${alertType eq 1 ? 'alert-success' : 'alert-danger'}">
+		  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+		  ${message}
+		</div>
+		
 		<div id="top" class="row">
  			<div class="col-md-3">
 		        <h3>Empresas</h3>
