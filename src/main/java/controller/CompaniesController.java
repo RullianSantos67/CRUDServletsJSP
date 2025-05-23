@@ -16,9 +16,11 @@ import model.dao.CompanyDAO;
 import model.dao.DAOFactory;
 
 @WebServlet(urlPatterns = {"/companies", "/company/form", 
-		"/company/insert", "/company/delete"})
+		"/company/insert", "/company/delete", "/company/update"})
 public class CompaniesController extends HttpServlet{
 	
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) 
 			throws ServletException, IOException {
@@ -33,7 +35,23 @@ public class CompaniesController extends HttpServlet{
 			break;
 		}
 		case "/crud-manager/company/update": {
+			String idStr = req.getParameter("companyId");
+			int idCompany = Integer.parseInt(idStr); 
 			
+			CompanyDAO dao = DAOFactory.createDAO(CompanyDAO.class);
+			
+			Company company = null;
+			try {
+				company = dao.findById(idCompany);
+			} catch (ModelException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			CommonsController.listUsers(req);
+			req.setAttribute("action", "update");
+			req.setAttribute("company", company);
+			ControllerUtil.forward(req, resp, "/form-company.jsp");
 			break;
 		}
 		default:
@@ -77,11 +95,51 @@ public class CompaniesController extends HttpServlet{
 			
 			break;
 		}
+		
+		case "/crud-manager/company/update" :{
+			updateCompany(req, resp);
+			break;
+		}
+		
 		default:
 			System.out.println("URL inválida " + action);
 		}
 		
 		ControllerUtil.redirect(resp, req.getContextPath() + "/companies");
+	}
+
+	private void updateCompany(HttpServletRequest req, HttpServletResponse resp) {
+		String companyIdStr = req.getParameter("companyId");
+		String companyName = req.getParameter("name");
+		String role = req.getParameter("role");
+		String start = req.getParameter("start");
+		String end = req.getParameter("end");
+		Integer userId = Integer.parseInt(req.getParameter("user"));
+		
+		Company company = new Company(Integer.parseInt(companyIdStr));
+		company.setName(companyName);
+		company.setRole(role);
+		company.setStart(ControllerUtil.formatDate(start));
+		company.setEnd(ControllerUtil.formatDate(end));
+		company.setUser(new User(userId));
+		
+		
+		CompanyDAO dao = DAOFactory.createDAO(CompanyDAO.class);
+		
+		try {
+			if (dao.update(company)) {
+				ControllerUtil.sucessMessage(req, "Empresa '" + 
+						company.getName() + "' atualizada com sucesso.");
+			}
+			else {
+				ControllerUtil.errorMessage(req, "Empresa '" + 
+						company.getName() + "' não pode ser atualizada.");
+			}				
+		} catch (ModelException e) {
+			// log no servidor
+			e.printStackTrace();
+			ControllerUtil.errorMessage(req, e.getMessage());
+		}		
 	}
 
 	private void deleteCompany(HttpServletRequest req, HttpServletResponse resp) {
