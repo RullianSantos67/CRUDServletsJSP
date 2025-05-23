@@ -31,6 +31,17 @@ CREATE TABLE IF NOT EXISTS companies (
 	REFERENCES users(id)
 );
 
+CREATE TABLE IF NOT EXISTS companies (
+id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+`name` VARCHAR(128) NOT NULL,
+`role` VARCHAR(128) NOT NULL,
+`start` DATE NOT NULL,
+`end` DATE,
+user_id INT NOT NULL,
+FOREIGN KEY(user_id)
+REFERENCES users(id)
+);
+
 INSERT INTO users VALUES
 (DEFAULT, "Emerson Carvalho", "M", "emerson@mail.com"),
 (DEFAULT, "Luiza Carvalho", "F", "lu@mail.com"),
@@ -47,5 +58,3 @@ INSERT INTO posts VALUES
 (DEFAULT, "Olá da Rosânia 1", CURDATE(), 5),
 (DEFAULT, "Olá da Rosânia 2", CURDATE(), 5),
 (DEFAULT, "Olá da Rosânia 3", CURDATE(), 5);
-
--- Testes
