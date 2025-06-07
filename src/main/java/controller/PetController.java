@@ -41,6 +41,9 @@ public class PetController extends HttpServlet {
                 case "edit":
                     showEditForm(req, resp);
                     break;
+                case "delete":
+                    deletePet(req, resp);
+                    break;
                 default:
                     listPets(req, resp);
                     break;
@@ -49,20 +52,10 @@ public class PetController extends HttpServlet {
             throw new ServletException(e);
         }
     }
-
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
-        String action = req.getParameter("action");
-        
-        if (action == null) {
-            saveOrUpdatePet(req, resp);
-        } else if ("delete".equals(action)) {
-            deletePet(req, resp);
-        }
-    }
 
-    private void saveOrUpdatePet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String idParam = req.getParameter("id");
         String name = req.getParameter("name");
         String species = req.getParameter("species");
@@ -70,10 +63,10 @@ public class PetController extends HttpServlet {
         String ownerIdParam = req.getParameter("ownerId");
         String weightParam = req.getParameter("weight");
 
+        // Validação simples do campo name
         if (name == null || name.trim().isEmpty()) {
             req.setAttribute("message", "Nome do pet é obrigatório");
-            req.setAttribute("alertType", 0);
-            loadOwners(req);
+            req.setAttribute("alertType", 0); // erro
             req.getRequestDispatcher("/pet-form.jsp").forward(req, resp);
             return;
         }
@@ -100,31 +93,29 @@ public class PetController extends HttpServlet {
 
             if (pet.getId() == 0) {
                 petDAO.insert(pet);
-                req.getSession().setAttribute("message", "Pet cadastrado com sucesso");
-                req.getSession().setAttribute("alertType", 1);
+                req.setAttribute("message", "Pet cadastrado com sucesso");
             } else {
                 petDAO.update(pet);
-                req.getSession().setAttribute("message", "Pet atualizado com sucesso");
-                req.getSession().setAttribute("alertType", 1);
+                req.setAttribute("message", "Pet atualizado com sucesso");
             }
 
-            resp.sendRedirect(req.getContextPath() + "/pets");
+            req.setAttribute("alertType", 1); // sucesso
+            req.getRequestDispatcher("/pets").forward(req, resp);
 
         } catch (Exception e) {
             req.setAttribute("message", "Erro ao salvar pet: " + e.getMessage());
             req.setAttribute("alertType", 0);
-            loadOwners(req);
             req.getRequestDispatcher("/pet-form.jsp").forward(req, resp);
         }
     }
 
-    private void listPets(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void listPets(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, ModelException {
         try {
             List<Pet> list = petDAO.getAll();
             req.setAttribute("listPets", list);
             loadOwners(req);
             req.getRequestDispatcher("/pets.jsp").forward(req, resp);
-        } catch (Exception e) {
+        } catch (SQLException e) {
             throw new ServletException(e);
         }
     }
@@ -135,29 +126,26 @@ public class PetController extends HttpServlet {
         req.getRequestDispatcher("/pet-form.jsp").forward(req, resp);
     }
 
-    private void showEditForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void showEditForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, ModelException {
         int id = Integer.parseInt(req.getParameter("id"));
         try {
             Pet existingPet = petDAO.getById(id);
             req.setAttribute("pet", existingPet);
             loadOwners(req);
             req.getRequestDispatcher("/pet-form.jsp").forward(req, resp);
-        } catch (Exception e) {
+        } catch (SQLException e) {
             throw new ServletException(e);
         }
     }
 
-    private void deletePet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private void deletePet(HttpServletRequest req, HttpServletResponse resp) throws IOException, ModelException {
         int id = Integer.parseInt(req.getParameter("id"));
         try {
             petDAO.delete(id);
-            req.getSession().setAttribute("message", "Pet excluído com sucesso");
-            req.getSession().setAttribute("alertType", 1);
-        } catch (Exception e) {
-            req.getSession().setAttribute("message", "Erro ao excluir pet: " + e.getMessage());
-            req.getSession().setAttribute("alertType", 0);
+            resp.sendRedirect(req.getContextPath() + "/pets");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        resp.sendRedirect(req.getContextPath() + "/pets");
     }
 
     private void loadOwners(HttpServletRequest req) {
@@ -165,7 +153,7 @@ public class PetController extends HttpServlet {
             List<User> owners = userDAO.listAll();
             req.setAttribute("ownersList", owners);
         } catch (ModelException e) {
-            req.setAttribute("error", "Erro ao carregar proprietários: " + e.getMessage());
+            throw new RuntimeException("Erro ao carregar usuários", e);
         }
     }
 }

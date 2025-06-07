@@ -70,7 +70,7 @@
     
     <script>
         $(document).ready(function() {
-            // Fecha automaticamente o alerta após 5 segundos
+           
             setTimeout(function() {
                 $(".alert").alert('close');
             }, 5000);

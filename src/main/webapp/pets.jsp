@@ -114,23 +114,20 @@
 <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        // Fecha automaticamente o alerta após 5 segundos
+  
         setTimeout(function () {
             $(".alert").alert('close');
         }, 5000);
 
-        // Configura modal de exclusão
+    
         $(".modal-remove").click(function () {
             var petName = $(this).attr('pet-name');
             var petId = $(this).attr('pet-id');
             
-            // Atualiza o texto de confirmação
             $(".modal-body #hiddenValue").text("o pet '" + petName + "'");
-            
-            // Define o ID do pet a ser excluído
+
             $("#deleteId").val(petId);
-            
-            // Define a ação do formulário
+
             $("#deleteForm").attr("action", "${pageContext.request.contextPath}/pets?action=delete");
         });
     });
