@@ -1,54 +1,62 @@
 <jsp:directive.page contentType="text/html; charset=UTF-8" />
-<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="pt-br">
-	<head>
-		<%@include file="base-head.jsp"%>
-	</head>
-	<body>
-		<%@include file="nav-menu.jsp"%>
-			
-		<div id="container" class="container-fluid">
-			<h3 class="page-header">Adicionar Post</h3>
+<head>
+	<%@include file="base-head.jsp" %>
+</head>
+<body>
+	<%@include file="modal.html" %>
+	<%@include file="nav-menu.jsp" %>
 
-			<form action="${pageContext.request.contextPath}/post/${action}" method="POST">
-				<input type="hidden" value="${post.getId()}" name="postId">
-				<div class="row">
-					<div class="form-group col-md-6">
-					<label for="content">Conteúdo</label>
-						<input type="text" class="form-control" id="content" name="content" 
-							   autofocus="autofocus" placeholder="Conteúdo do post" 
-							   required oninvalid="this.setCustomValidity('Por favor, informe o conteúdo do post.')"
-							   oninput="setCustomValidity('')"
-							   value="${post.getContent()}">
-					</div>
-
-					<div class="form-group col-md-6">
-						<label for="user">Usuário</label>
-						<select id="user" class="form-control selectpicker" name="user" 
-							    required oninvalid="this.setCustomValidity('Por favor, informe o usuário.')"
-							    oninput="setCustomValidity('')">
-						  <option value="" disabled ${not empty post ? "" : "selected"}>Selecione um usuário</option>
-						  <c:forEach var="user" items="${users}">
-						  	<option value="${user.getId()}"  ${post.getUser().getId() == user.getId() ? "selected" : ""}>
-						  		${user.getName()}
-						  	</option>	
-						  </c:forEach>
-						</select>
-					</div>
-				</div>
-				<hr />
-				<div id="actions" class="row pull-right">
-					<div class="col-md-12">
-						<a href="${pageContext.request.contextPath}/posts" class="btn btn-default">Cancelar</a>
-						<button type="submit" class="btn btn-primary">${not empty post ? "Alterar Post" : "Criar Post"}</button>
-					</div>
-				</div>
-			</form>
+	<div id="container" class="container-fluid">
+		<div id="top" class="row">
+			<div class="col-md-12">
+				<h2>${action == 'insert' ? 'Novo Post' : 'Editar Post'}</h2>
+			</div>
 		</div>
 
-		<script src="js/jquery.min.js"></script>
-		<script src="js/bootstrap.min.js"></script>
-	</body>
+		<hr />
+
+		<div id="form" class="row">
+			<div class="col-md-12">
+				<form action="${pageContext.request.contextPath}/post/${action}" method="post" id="form">
+					<input type="hidden" name="id" id="id" value="${post != null ? post.getId() : ''}" />
+
+					<div class="form-group">
+						<label for="title">Título</label>
+						<input type="text" class="form-control" name="title" id="title"
+							value="${post != null ? post.getTitle() : ''}" required />
+					</div>
+
+					<div class="form-group">
+						<label for="content">Conteúdo</label>
+						<textarea class="form-control" name="content" id="content" rows="5" required>${post != null ? post.getContent() : ''}</textarea>
+					</div>
+
+					<div class="form-group">
+						<label for="userId">Usuário</label>
+						<select name="userId" id="userId" class="form-control" required>
+							<option value="" disabled ${post == null ? 'selected' : ''}>Selecione um usuário</option>
+							<c:forEach var="user" items="${users}">
+								<option value="${user.getId()}"
+									${post != null && post.getUser().getId() == user.getId() ? 'selected' : ''}>
+									${user.getNome()}
+								</option>
+							</c:forEach>
+						</select>
+					</div>
+
+					<div class="form-group">
+						<button type="submit" class="btn btn-primary">Salvar</button>
+						<a href="${pageContext.request.contextPath}/posts" class="btn btn-default">Cancelar</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+</body>
 </html>

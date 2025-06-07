@@ -90,9 +90,9 @@ public class MySQLCompanyDAO implements CompanyDAO {
 		db.executeQuery(sqlQuery);
 
 		while (db.next()) {
-			User user = new User(db.getInt("user_id"));
-			user.setName(db.getString("nome"));
-			user.setGender(db.getString("sexo"));
+			User user = new User(db.getInt("user_id"), sqlQuery, sqlQuery, sqlQuery, sqlQuery);
+			user.setNome(db.getString("nome"));
+			user.setSexo(db.getString("sexo"));
 			user.setEmail(db.getString("email"));
 			
 			Company company = new Company(db.getInt("company_id"));

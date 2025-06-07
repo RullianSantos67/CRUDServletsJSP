@@ -1,47 +1,37 @@
 package model;
 
 public class User {
-	private int id;
-	private String name;
-	private String gender;
-	private String email;
-	
-	public User() {
-		this(0);
-	}
-	
-	public User(int id) {
-		this.id = id;
-		setName("");
-		setGender("");
-		setEmail("");
-	}
+    private int id;
+    private String nome;
+    private String sexo;
+    private String email;
+    private String password;
 
-	public String getName() {
-		return name;
-	}
+    
+    public User(int id) {
+        this.id = id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public User(int id, String nome, String sexo, String email, String password) {
+        this.id = id;
+        this.nome = nome;
+        this.sexo = sexo;
+        this.email = email;
+        this.password = password;
+    }
 
-	public String getGender() {
-		return gender;
-	}
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
 
-	public String getEmail() {
-		return email;
-	}
+    public String getSexo() { return sexo; }
+    public void setSexo(String sexo) { this.sexo = sexo; }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-	public int getId() {
-		return id;
-	}
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 }

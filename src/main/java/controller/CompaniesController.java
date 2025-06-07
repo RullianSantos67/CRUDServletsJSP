@@ -121,7 +121,7 @@ public class CompaniesController extends HttpServlet{
 		company.setRole(role);
 		company.setStart(ControllerUtil.formatDate(start));
 		company.setEnd(ControllerUtil.formatDate(end));
-		company.setUser(new User(userId));
+		company.setUser(new User(userId, end, end, end, end));
 		
 		
 		CompanyDAO dao = DAOFactory.createDAO(CompanyDAO.class);
@@ -187,7 +187,7 @@ public class CompaniesController extends HttpServlet{
 		comp.setRole(role);
 		comp.setStart(ControllerUtil.formatDate(start));
 		comp.setEnd(ControllerUtil.formatDate(end));
-		comp.setUser(new User(userId));
+		comp.setUser(new User(userId, end, end, end, end));
 		
 		CompanyDAO dao = DAOFactory.createDAO(CompanyDAO.class);
 	
