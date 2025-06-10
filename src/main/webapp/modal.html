@@ -1,23 +1,31 @@
 <div class="modal fade" id="delete-modal" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title" id="modalLabel">Excluir Pet</h4>
-            </div>
-            <div class="modal-body">
-                <p>Deseja realmente excluir <strong><span id="hiddenValue"></span></strong>?</p>
-                <p class="text-danger"><small>Esta ação não pode ser desfeita.</small></p>
-            </div>
-            <div class="modal-footer">
-                <form id="deleteForm" action="" method="post">
-                    <input type="hidden" id="deleteId" name="id" value="">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-danger">Excluir</button>
-                </form>
-            </div>
-        </div>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="modalLabel">Excluir Pet</h4>
+      </div>
+      <div class="modal-body">
+        <p>Deseja realmente excluir <strong><span id="hiddenValue"></span></strong>?</p>
+      </div>
+      <div class="modal-footer">
+        <form id="deleteForm" action="${pageContext.request.contextPath}/pet/delete" method="get">
+          <input type="hidden" id="deleteId" name="id" value="" />
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-danger">Excluir</button>
+        </form>
+      </div>
     </div>
+  </div>
 </div>
+
+<script>
+    function confirmDelete(id, name) {
+        document.getElementById("deleteId").value = id;
+        document.getElementById("hiddenValue").textContent = name;
+        $('#delete-modal').modal('show');
+    }
+</script>
+

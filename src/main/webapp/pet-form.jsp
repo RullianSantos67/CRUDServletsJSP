@@ -3,83 +3,69 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <%@include file="base-head.jsp" %>
-    <title>CRUD Manager - Pet</title>
+  <%@ include file="base-head.jsp" %>
+  <title>${action == 'update' ? 'Editar Pet' : 'Novo Pet'}</title>
 </head>
 <body>
-<%@include file="modal.html" %>
-<%@include file="nav-menu.jsp" %>
+  <%@ include file="modal.html" %>
+  <%@ include file="nav-menu.jsp" %>
 
-<div id="container" class="container-fluid">
-    <div id="top" class="row">
-        <div class="col-md-12">
-            <h2 class="h3">Cadastro de Pet</h2>
+  <div class="container-fluid">
+    <h3>${action == 'update' ? 'Editar Pet' : 'Cadastrar Pet'}</h3>
+    <hr/>
+
+    <form action="${pageContext.request.contextPath}/pet/${action}" method="post">
+      <c:if test="${action == 'update'}">
+        <input type="hidden" name="id" value="${pet.id}"/>
+      </c:if>
+
+      <div class="row">
+        <div class="form-group col-md-6">
+          <label>Nome do Pet</label>
+          <input type="text" name="name" class="form-control" required
+                 value="${pet != null ? pet.name : ''}"/>
         </div>
-    </div>
-
-    <hr />
-
-    <form action="${pageContext.request.contextPath}/pets" method="post">
-        <c:if test="${pet != null}">
-            <input type="hidden" name="id" value="${pet.id}" />
-        </c:if>
-
-        <div class="row">
-            <div class="form-group col-md-6">
-                <label for="name">Nome do Pet</label>
-                <input type="text" id="name" name="name" class="form-control" required
-                       value="${pet != null ? pet.name : ''}" />
-            </div>
-
-            <div class="form-group col-md-6">
-                <label for="species">Espécie</label>
-                <input type="text" id="species" name="species" class="form-control" required
-                       value="${pet != null ? pet.species : ''}" />
-            </div>
+        <div class="form-group col-md-6">
+          <label>Espécie</label>
+          <input type="text" name="species" class="form-control" required
+                 value="${pet != null ? pet.species : ''}"/>
         </div>
+      </div>
 
-        <div class="row">
-            <div class="form-group col-md-4">
-                <label for="birthdate">Data de Nascimento</label>
-                <input type="date" id="birthdate" name="birthdate" class="form-control" required
-                       value="<c:out value='${pet != null && pet.birthdate != null ? pet.birthdate.toString() : ""}'/>" />
-            </div>
-
-            <div class="form-group col-md-4">
-                <label for="weight">Peso (kg)</label>
-                <input type="number" id="weight" name="weight" class="form-control" step="0.1" required
-                       value="<c:out value='${pet != null ? pet.weight : ""}'/>" />
-            </div>
-
-            <div class="form-group col-md-4">
-                <label for="ownerId">Proprietário</label>
-                <select id="ownerId" name="ownerId" class="form-control" required>
-                    <option value="">-- selecione --</option>
-                    <c:forEach var="u" items="${ownersList}">
-                        <option value="${u.id}" <c:if test="${pet != null && pet.ownerId == u.id}">selected</c:if>>
-                            ${u.nome}
-                        </option>
-                    </c:forEach>
-                </select>
-            </div>
+      <div class="row">
+        <div class="form-group col-md-4">
+          <label>Data de Nascimento</label>
+          <input type="date" name="birthdate" class="form-control" required
+                 value="<c:out value='${pet != null ? pet.birthdate : ""}'/>"/>
         </div>
-
-        <hr />
-
-        <div class="row">
-            <div class="form-group col-md-12">
-                <a href="${pageContext.request.contextPath}/pets" class="btn btn-default">
-                    <span class="glyphicon glyphicon-remove"></span> Cancelar
-                </a>
-                <button type="submit" class="btn btn-danger">
-                    <span class="glyphicon glyphicon-ok"></span> Salvar Pet
-                </button>
-            </div>
+        <div class="form-group col-md-4">
+          <label>Peso (kg)</label>
+          <input type="number" name="weight" class="form-control" step="0.1" required
+                 value="<c:out value='${pet != null ? pet.weight : ""}'/>"/>
         </div>
+        <div class="form-group col-md-4">
+          <label>Proprietário</label>
+          <select name="ownerId" class="form-control" required>
+            <option value="">-- selecione --</option>
+            <c:forEach var="u" items="${ownersList}">
+              <option value="${u.id}"
+                <c:if test="${pet != null && pet.ownerId == u.id}">selected</c:if>>
+                ${u.nome}
+              </option>
+            </c:forEach>
+          </select>
+        </div>
+      </div>
+
+      <hr/>
+      <button type="submit" class="btn btn-primary">
+        ${action == 'update' ? 'Atualizar' : 'Salvar'}
+      </button>
+      <a href="${pageContext.request.contextPath}/pets" class="btn btn-default">Cancelar</a>
     </form>
-</div>
+  </div>
 
-<script src="js/jquery.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
+  <script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
+  <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
 </body>
 </html>

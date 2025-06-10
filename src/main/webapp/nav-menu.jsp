@@ -25,6 +25,8 @@
 
         .navbar-brand img {
             margin-top: -5px;
+            width: 40px;
+    		height: 40px;
         }
 
 
@@ -32,11 +34,9 @@
             margin-right: 6px;
             width: 20px;
             text-align: center;
+            padding: 15px 20px;
         }
-
-        .dropdown-menu > li > a {
-            padding: 10px 15px;
-        }
+        
     </style>
 </head>
 <body>
