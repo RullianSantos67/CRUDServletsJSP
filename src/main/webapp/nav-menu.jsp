@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page session="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -18,7 +19,17 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
 
-    <style>
+
+<style> 
+ .btn-login:hover {
+            background-color: #c9302c;
+            border-color: #ac2925;
+        }
+        .footer-links {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
         body {
             padding-top: 70px;
         }
@@ -37,7 +48,9 @@
             padding: 15px 20px;
         }
         
-    </style>
+</style>
+
+    
 </head>
 <body>
 
